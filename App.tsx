@@ -9,6 +9,7 @@ import { RecipeDetailModal } from './components/RecipeDetailModal';
 import { RecipeBooksView } from './components/RecipeBooksView';
 import { NotebookView } from './components/NotebookView';
 import { PantryView } from './components/PantryView';
+import { IntroAnimation } from './components/IntroAnimation';
 
 const CATEGORY_FILTERS: { label: string; value: RecipeCategory | 'All' }[] = [
   { label: 'All', value: 'All' },
@@ -31,6 +32,7 @@ const NAV_ITEMS = [
 ] as const;
 
 export default function App() {
+  const [showIntro, setShowIntro] = useState(true);
   const [currentView, setCurrentView] = useState<ViewState>('collection');
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -140,7 +142,9 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-stone-800 font-sans selection:bg-orange-100 selection:text-orange-900">
       
-      {/* --- SIDE DRAWER (Mobile) --- */}
+      {showIntro && <IntroAnimation onComplete={() => setShowIntro(false)} />}
+
+      {/* --- SIDE DRAWER (Mobile & Desktop Trigger) --- */}
       <div 
         className={`fixed inset-0 z-50 transform transition-all duration-300 ease-in-out ${isDrawerOpen ? 'visible' : 'invisible'}`}
       >
@@ -160,7 +164,7 @@ export default function App() {
           
           <div className="p-6 space-y-6 flex-1 overflow-y-auto">
             {/* Mobile Search */}
-            <div className="relative">
+            <div className="relative lg:hidden">
               <input 
                 type="text" 
                 placeholder="Find a recipe..." 
@@ -215,59 +219,71 @@ export default function App() {
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
           <div className="flex h-20 items-center justify-between">
             
-            {/* Left: Mobile Menu & Logo */}
-            <div className="flex items-center gap-4 lg:gap-8">
+            {/* Left Section: Hamburger & Logo */}
+            <div className="flex items-center gap-5">
               <button 
                 onClick={() => setIsDrawerOpen(true)}
-                className="lg:hidden p-2 -ml-2 text-stone-700 hover:bg-stone-100 rounded-md"
+                className="p-2 -ml-2 text-stone-700 hover:bg-stone-100 rounded-md transition-colors"
               >
                 <Menu size={24} strokeWidth={2} />
               </button>
               
               <div 
-                className="flex items-center gap-2 cursor-pointer group" 
+                className="flex items-center gap-2 cursor-pointer select-none group" 
                 onClick={() => setCurrentView('collection')}
               >
-                <ChefHat className="text-orange-700 group-hover:rotate-12 transition-transform duration-300" size={28} strokeWidth={2} />
-                <h1 className="text-2xl lg:text-3xl font-serif font-bold tracking-tight text-stone-800">
+                <ChefHat className="text-orange-700 group-hover:rotate-12 transition-transform duration-300" size={26} strokeWidth={2} />
+                <h1 className="text-2xl font-serif font-bold tracking-tight text-stone-800">
                   Culina<span className="text-orange-700">.</span>
                 </h1>
               </div>
             </div>
 
-            {/* Center/Right: Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-8">
-              {NAV_ITEMS.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => handleNavClick(item.id as ViewState)}
-                  className={`text-sm font-bold transition-all hover:text-orange-700 relative py-2 group ${
-                    currentView === item.id ? 'text-orange-700' : 'text-stone-500'
-                  }`}
+            {/* Right Section: Nav & Search */}
+            <div className="hidden lg:flex items-center gap-8">
+              <nav className="flex items-center gap-6">
+                {NAV_ITEMS.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => handleNavClick(item.id as ViewState)}
+                    className={`text-sm font-bold transition-colors hover:text-orange-700 relative py-1 ${
+                      currentView === item.id ? 'text-orange-700' : 'text-stone-600'
+                    }`}
+                  >
+                    {item.label}
+                    {currentView === item.id && (
+                      <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-orange-700"></span>
+                    )}
+                  </button>
+                ))}
+                
+                {/* Separator */}
+                <div className="h-4 w-px bg-stone-300"></div>
+                
+                <button 
+                  onClick={openCreateModal} 
+                  className="text-sm font-bold text-orange-700 hover:text-orange-800 transition-colors"
                 >
-                  {item.label}
-                  <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-orange-700 transform origin-left transition-transform duration-300 ${currentView === item.id ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`} />
+                  Create Recipe
                 </button>
-              ))}
-              <div className="h-6 w-px bg-stone-200 mx-2"></div>
-              <button onClick={openCreateModal} className="text-sm font-bold text-stone-500 hover:text-orange-700">
-                Create
-              </button>
-            </nav>
+              </nav>
 
-            {/* Right: Search */}
-            <div className="hidden lg:flex items-center">
-               <div className="relative group">
+              {/* Search Bar */}
+              <div className="relative group">
                  <input
                     type="text"
                     placeholder="Find a recipe"
                     value={searchQuery}
                     onChange={(e) => handleGlobalSearch(e.target.value)}
-                    className="w-[240px] transition-all duration-300 border border-stone-300 bg-stone-50 px-4 py-2 pr-10 text-sm focus:border-orange-500 focus:outline-none focus:w-[300px]"
+                    className="w-[240px] transition-all duration-300 border border-stone-300 bg-stone-50 px-4 py-2 pr-10 text-sm rounded-sm focus:border-stone-500 focus:outline-none focus:bg-white"
                  />
                  <Search className="absolute right-3 top-2.5 text-stone-400 pointer-events-none group-focus-within:text-orange-600" size={16} />
-               </div>
+              </div>
             </div>
+
+            {/* Mobile Right: Just spacing or actions if needed later */}
+            <div className="lg:hidden"></div>
+
           </div>
         </div>
       </header>
