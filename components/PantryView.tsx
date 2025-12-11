@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Sparkles, ChefHat, Loader2, ArrowRight, AlertCircle, Refrigerator } from 'lucide-react';
+import { Sparkles, Loader2, ArrowRight, AlertCircle, Refrigerator } from 'lucide-react';
 import { suggestRecipesFromIngredients } from '../services/geminiService';
 import { RecipeSuggestion } from '../types';
 
@@ -36,49 +36,46 @@ export const PantryView: React.FC<PantryViewProps> = ({ onSelectSuggestion }) =>
   return (
     <div className="max-w-4xl mx-auto animate-in fade-in duration-500">
       
-      {/* Header */}
+      {/* Editorial Header */}
       <div className="text-center space-y-4 mb-12">
-        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 text-emerald-800 shadow-md">
-          <Refrigerator size={40} strokeWidth={1.5} />
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-800 border border-emerald-100">
+          <Refrigerator size={32} strokeWidth={1.5} />
         </div>
         <div>
           <h2 className="text-4xl font-serif font-bold text-stone-800">The Pantry Chef</h2>
-          <p className="text-stone-500 max-w-lg mx-auto mt-2">
-            Don't know what to cook? Tell us what ingredients you have, and we'll help you turn them into a meal.
+          <div className="h-1 w-16 bg-emerald-600 mx-auto my-4"></div>
+          <p className="text-stone-500 max-w-lg mx-auto font-serif text-lg leading-relaxed">
+            Turn your leftovers into a feast. Tell us what you have.
           </p>
         </div>
       </div>
 
       {/* Input Section */}
-      <div className="bg-white rounded-2xl shadow-xl border border-stone-200 overflow-hidden mb-12">
-        <div className="bg-stone-50 p-4 border-b border-stone-100 flex items-center gap-2">
-          <span className="flex h-3 w-3 rounded-full bg-red-400"></span>
-          <span className="flex h-3 w-3 rounded-full bg-yellow-400"></span>
-          <span className="flex h-3 w-3 rounded-full bg-green-400"></span>
-          <span className="ml-2 text-xs font-bold text-stone-400 uppercase tracking-widest">Ingredients List</span>
-        </div>
-        <form onSubmit={handleSearch} className="p-6 sm:p-8">
+      <div className="bg-white rounded-xl shadow-lg border border-stone-200 overflow-hidden mb-16 relative">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 to-emerald-600"></div>
+        <form onSubmit={handleSearch} className="p-8 md:p-10">
+          <div className="mb-2 text-xs font-bold uppercase tracking-widest text-stone-400">Your Ingredients</div>
           <textarea
             value={ingredients}
             onChange={(e) => setIngredients(e.target.value)}
-            placeholder="e.g. 2 eggs, some leftover rice, soy sauce, a bit of cabbage..."
-            className="w-full h-32 p-4 text-lg bg-transparent border-2 border-dashed border-stone-300 rounded-xl focus:border-emerald-500 focus:ring-0 focus:outline-none transition-colors resize-none placeholder:text-stone-400 font-serif leading-relaxed"
+            placeholder="e.g. 2 eggs, leftover rice, soy sauce..."
+            className="w-full h-32 text-xl bg-stone-50 border-b-2 border-stone-200 focus:border-emerald-600 focus:bg-white focus:outline-none transition-colors resize-none placeholder:text-stone-300 font-serif leading-relaxed"
           />
-          <div className="mt-6 flex justify-end">
+          <div className="mt-8 flex justify-end">
             <button
               type="submit"
               disabled={isSearching || !ingredients.trim()}
-              className="flex items-center gap-2 bg-emerald-700 text-white px-8 py-3 rounded-xl font-bold text-lg shadow-lg shadow-emerald-900/20 hover:bg-emerald-800 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full md:w-auto flex items-center justify-center gap-3 bg-stone-900 text-white px-10 py-4 rounded-none hover:bg-emerald-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-bold uppercase tracking-widest text-sm"
             >
-              {isSearching ? <Loader2 className="animate-spin" /> : <Sparkles />}
-              {isSearching ? 'Chefs are thinking...' : 'Find Recipes'}
+              {isSearching ? <Loader2 className="animate-spin" size={16} /> : <Sparkles size={16} />}
+              {isSearching ? 'Creating Menu...' : 'Create Menu'}
             </button>
           </div>
         </form>
       </div>
 
       {error && (
-        <div className="mb-8 p-4 bg-red-50 text-red-700 rounded-xl flex items-center gap-3 border border-red-100">
+        <div className="mb-8 p-4 bg-red-50 text-red-700 border border-red-100 flex items-center gap-3">
           <AlertCircle size={20} />
           <span>{error}</span>
         </div>
@@ -86,52 +83,57 @@ export const PantryView: React.FC<PantryViewProps> = ({ onSelectSuggestion }) =>
 
       {/* Suggestions Grid */}
       {suggestions.length > 0 && (
-        <div className="space-y-6">
-          <h3 className="text-2xl font-serif font-bold text-stone-800 pl-2 border-l-4 border-emerald-600">
-            Suggested Dishes
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-8">
+          <div className="flex items-center gap-4">
+             <h3 className="text-2xl font-serif font-bold text-stone-800">
+               Chef's Recommendations
+             </h3>
+             <div className="h-px flex-1 bg-stone-200"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {suggestions.map((suggestion, index) => (
-              <div key={index} className="group bg-white p-6 rounded-xl border border-stone-200 shadow-sm hover:shadow-xl transition-all duration-300">
-                <div className="mb-4">
-                  <h4 className="text-xl font-serif font-bold text-stone-800 mb-2 group-hover:text-emerald-800 transition-colors">
+              <div key={index} className="group flex flex-col bg-white border border-stone-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full">
+                <div className="p-8 flex flex-col flex-1">
+                   <h4 className="text-2xl font-serif font-bold text-stone-800 mb-3 group-hover:text-emerald-700 transition-colors">
                     {suggestion.name}
                   </h4>
-                  <p className="text-stone-600 text-sm leading-relaxed">
-                    {suggestion.description}
+                  <p className="text-stone-500 font-serif italic mb-6 flex-1">
+                    "{suggestion.description}"
                   </p>
-                </div>
 
-                <div className="space-y-3 mb-6">
-                  <div className="text-xs font-bold uppercase tracking-wider text-stone-400">Used Ingredients</div>
-                  <div className="flex flex-wrap gap-2">
-                    {suggestion.usedIngredients.map((ing, i) => (
-                      <span key={i} className="px-2 py-1 bg-emerald-50 text-emerald-700 text-xs rounded-md font-medium border border-emerald-100">
-                        {ing}
-                      </span>
-                    ))}
-                  </div>
-                  
-                  {suggestion.missingIngredients.length > 0 && (
-                    <>
-                      <div className="text-xs font-bold uppercase tracking-wider text-stone-400 mt-2">Missing / Pantry Staples</div>
-                      <div className="flex flex-wrap gap-2">
-                        {suggestion.missingIngredients.map((ing, i) => (
-                          <span key={i} className="px-2 py-1 bg-stone-100 text-stone-600 text-xs rounded-md font-medium border border-stone-200">
+                  <div className="space-y-4 pt-6 border-t border-stone-100">
+                     <div>
+                       <div className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 mb-2">Using</div>
+                       <div className="flex flex-wrap gap-2">
+                        {suggestion.usedIngredients.map((ing, i) => (
+                          <span key={i} className="text-stone-600 text-xs border-b border-stone-200 pb-0.5">
                             {ing}
                           </span>
                         ))}
-                      </div>
-                    </>
-                  )}
+                       </div>
+                     </div>
+                     {suggestion.missingIngredients.length > 0 && (
+                       <div>
+                         <div className="text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">You need</div>
+                         <div className="flex flex-wrap gap-2">
+                          {suggestion.missingIngredients.map((ing, i) => (
+                            <span key={i} className="text-stone-400 text-xs border-b border-stone-100 pb-0.5">
+                              {ing}
+                            </span>
+                          ))}
+                         </div>
+                       </div>
+                     )}
+                  </div>
                 </div>
 
                 <button
                   onClick={() => onSelectSuggestion(suggestion.name)}
-                  className="w-full flex items-center justify-between px-4 py-3 bg-stone-50 hover:bg-orange-700 hover:text-white text-stone-700 rounded-lg font-bold transition-all group/btn"
+                  className="w-full flex items-center justify-between px-8 py-4 bg-stone-50 hover:bg-stone-900 hover:text-white text-stone-500 font-bold uppercase tracking-widest text-xs transition-colors group/btn"
                 >
-                  <span>Cook this dish</span>
-                  <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
+                  <span>View Recipe</span>
+                  <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
                 </button>
               </div>
             ))}

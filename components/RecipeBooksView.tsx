@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { Download, Book, ArrowRight } from 'lucide-react';
+import { Download, Book } from 'lucide-react';
 
 const BOOKS = [
   {
@@ -42,17 +43,18 @@ export const RecipeBooksView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="text-center space-y-2 mb-10">
-        <h2 className="text-3xl font-serif font-bold text-stone-800">The Library</h2>
-        <p className="text-stone-500 max-w-lg mx-auto">
-          Expand your culinary knowledge with our curated collection of digital recipe books.
+    <div className="space-y-12 animate-in fade-in duration-500">
+      <div className="text-center space-y-3">
+        <h2 className="text-4xl font-serif font-bold text-stone-800">The Library</h2>
+        <div className="h-1 w-20 bg-orange-700 mx-auto"></div>
+        <p className="text-stone-500 max-w-lg mx-auto font-serif italic">
+          Expand your culinary knowledge with our curated collection.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {BOOKS.map((book) => (
-          <div key={book.id} className="group relative flex flex-col bg-white rounded-r-2xl rounded-l-sm shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden border-l-8 border-stone-800/20">
+          <div key={book.id} className="group relative flex flex-col bg-white rounded-r-xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden border-l-[6px] border-stone-800/20">
             {/* Book Spine visual trick */}
             <div className={`absolute left-0 top-0 bottom-0 w-1 ${book.color}`}></div>
             
@@ -66,22 +68,22 @@ export const RecipeBooksView: React.FC = () => {
                />
                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent z-20">
                  <h3 className="text-white font-serif font-bold text-xl leading-tight">{book.title}</h3>
-                 <p className="text-stone-300 text-xs mt-1">by {book.author}</p>
+                 <p className="text-stone-300 text-xs mt-1 uppercase tracking-wider">by {book.author}</p>
                </div>
             </div>
 
             {/* Content */}
             <div className="p-5 flex flex-col flex-1">
-              <p className="text-sm text-stone-600 mb-4 line-clamp-3 leading-relaxed">
+              <p className="text-sm text-stone-600 mb-6 line-clamp-3 leading-relaxed font-serif">
                 {book.description}
               </p>
               
               <div className="mt-auto pt-4 border-t border-stone-100">
                 <button 
                   onClick={() => handleDownload(book.title)}
-                  className="w-full flex items-center justify-center gap-2 bg-stone-100 hover:bg-orange-700 hover:text-white text-stone-700 font-bold py-2.5 px-4 rounded-lg transition-colors text-sm group/btn"
+                  className="w-full flex items-center justify-center gap-2 bg-stone-50 hover:bg-orange-700 hover:text-white text-stone-600 font-bold uppercase tracking-widest text-xs py-3 rounded transition-colors group/btn"
                 >
-                  <Download size={16} />
+                  <Download size={14} />
                   <span>Download PDF</span>
                 </button>
               </div>
@@ -90,11 +92,9 @@ export const RecipeBooksView: React.FC = () => {
         ))}
       </div>
 
-      {/* Empty State / Coming Soon */}
-      <div className="mt-16 rounded-2xl border-2 border-dashed border-stone-300 bg-stone-50/50 p-8 text-center">
-        <Book size={32} className="mx-auto text-stone-400 mb-3" />
-        <h3 className="text-lg font-bold text-stone-600">More books coming soon</h3>
-        <p className="text-sm text-stone-500">We release new collections every season.</p>
+      <div className="mt-16 text-center text-stone-400">
+        <Book size={24} className="mx-auto mb-2 opacity-50" />
+        <p className="text-xs font-bold uppercase tracking-widest">More volumes coming soon</p>
       </div>
     </div>
   );
