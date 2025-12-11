@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { Plus, Search, Filter, ChefHat, Menu, X, Instagram, Facebook, Twitter, Youtube, ArrowRight } from 'lucide-react';
 import { Recipe, RecipeFormData, RecipeCategory } from './types';
@@ -140,7 +139,8 @@ export default function App() {
   }, [recipes, searchQuery, timeFilter, categoryFilter]);
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] text-stone-800 font-sans selection:bg-orange-100 selection:text-orange-900">
+    // Removed bg-white to let the food pattern body background show through
+    <div className="min-h-screen font-sans selection:bg-orange-100 selection:text-orange-900">
       
       {showIntro && <IntroAnimation onComplete={() => setShowIntro(false)} />}
 
@@ -156,8 +156,8 @@ export default function App() {
           className={`absolute left-0 top-0 bottom-0 w-[300px] bg-white shadow-2xl transform transition-transform duration-300 ease-out flex flex-col ${isDrawerOpen ? 'translate-x-0' : '-translate-x-full'}`}
         >
           <div className="p-6 flex items-center justify-between border-b border-stone-100">
-             <span className="font-serif text-2xl font-bold tracking-tight">Culina</span>
-             <button onClick={() => setIsDrawerOpen(false)} className="p-2 text-stone-500 hover:bg-stone-100 rounded-full">
+             <span className="font-serif text-2xl font-bold tracking-tight text-orange-600">Culina</span>
+             <button onClick={() => setIsDrawerOpen(false)} className="p-2 text-stone-500 hover:bg-orange-50 hover:text-orange-600 rounded-full transition-colors">
                <X size={24} />
              </button>
           </div>
@@ -170,7 +170,7 @@ export default function App() {
                 placeholder="Find a recipe..." 
                 value={searchQuery}
                 onChange={(e) => handleGlobalSearch(e.target.value)}
-                className="w-full bg-stone-50 border border-stone-200 rounded-lg py-3 pl-4 pr-10 text-stone-700 focus:outline-none focus:border-orange-500"
+                className="w-full bg-stone-50 border border-stone-200 rounded-lg py-3 pl-4 pr-10 text-stone-700 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
               />
               <Search className="absolute right-3 top-3.5 text-stone-400" size={18} />
             </div>
@@ -181,31 +181,31 @@ export default function App() {
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id as ViewState)}
-                  className={`flex items-center justify-between text-left font-bold text-lg py-2 border-b border-stone-100 ${
-                    currentView === item.id ? 'text-orange-700' : 'text-stone-600'
+                  className={`flex items-center justify-between text-left font-bold text-lg py-2 border-b border-stone-100 hover:text-orange-600 ${
+                    currentView === item.id ? 'text-orange-600' : 'text-stone-500'
                   }`}
                 >
                   {item.label}
-                  <ArrowRight size={16} className={`transform transition-transform ${currentView === item.id ? 'translate-x-0 opacity-100' : '-translate-x-2 opacity-0'}`} />
+                  <ArrowRight size={16} className={`transform transition-transform ${currentView === item.id ? 'translate-x-0 opacity-100 text-orange-500' : '-translate-x-2 opacity-0'}`} />
                 </button>
               ))}
             </nav>
 
             <button
               onClick={() => { openCreateModal(); setIsDrawerOpen(false); }}
-              className="w-full bg-orange-700 text-white font-bold text-sm py-3 rounded-lg shadow-md mt-4"
+              className="w-full bg-orange-500 text-white font-bold text-sm py-3 rounded-lg shadow-md mt-4 hover:bg-orange-600 transition-colors"
             >
               Submit Recipe
             </button>
           </div>
 
           {/* Social Icons Footer */}
-          <div className="p-6 border-t border-stone-100 bg-stone-50">
-            <div className="flex justify-center gap-6 text-stone-400">
-              <Facebook size={20} className="hover:text-stone-800 cursor-pointer transition-colors" />
-              <Instagram size={20} className="hover:text-stone-800 cursor-pointer transition-colors" />
-              <Twitter size={20} className="hover:text-stone-800 cursor-pointer transition-colors" />
-              <Youtube size={20} className="hover:text-stone-800 cursor-pointer transition-colors" />
+          <div className="p-6 border-t border-stone-100 bg-orange-50">
+            <div className="flex justify-center gap-6 text-orange-400">
+              <Facebook size={20} className="hover:text-orange-600 cursor-pointer transition-colors" />
+              <Instagram size={20} className="hover:text-orange-600 cursor-pointer transition-colors" />
+              <Twitter size={20} className="hover:text-orange-600 cursor-pointer transition-colors" />
+              <Youtube size={20} className="hover:text-orange-600 cursor-pointer transition-colors" />
             </div>
             <p className="text-center text-[10px] text-stone-400 mt-4 uppercase tracking-wider">
               © 2024 Culina Inc.
@@ -215,7 +215,7 @@ export default function App() {
       </div>
 
       {/* --- DESKTOP HEADER --- */}
-      <header className="sticky top-0 z-40 w-full bg-white border-b border-stone-200 shadow-sm transition-all">
+      <header className="sticky top-0 z-40 w-full bg-white border-b-4 border-orange-100 shadow-md transition-all">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
           <div className="flex h-20 items-center justify-between">
             
@@ -223,7 +223,7 @@ export default function App() {
             <div className="flex items-center gap-5">
               <button 
                 onClick={() => setIsDrawerOpen(true)}
-                className="p-2 -ml-2 text-stone-700 hover:bg-stone-100 rounded-md transition-colors"
+                className="p-2 -ml-2 text-stone-700 hover:bg-orange-50 hover:text-orange-600 rounded-md transition-colors"
               >
                 <Menu size={24} strokeWidth={2} />
               </button>
@@ -232,9 +232,11 @@ export default function App() {
                 className="flex items-center gap-2 cursor-pointer select-none group" 
                 onClick={() => setCurrentView('collection')}
               >
-                <ChefHat className="text-orange-700 group-hover:rotate-12 transition-transform duration-300" size={26} strokeWidth={2} />
-                <h1 className="text-2xl font-serif font-bold tracking-tight text-stone-800">
-                  Culina<span className="text-orange-700">.</span>
+                <div className="bg-orange-50 p-2 rounded-full group-hover:bg-orange-100 transition-colors">
+                  <ChefHat className="text-orange-600 group-hover:rotate-12 transition-transform duration-300" size={24} strokeWidth={2.5} />
+                </div>
+                <h1 className="text-2xl font-serif font-bold tracking-tight text-stone-900 group-hover:text-orange-600 transition-colors">
+                  Culina<span className="text-orange-500">.</span>
                 </h1>
               </div>
             </div>
@@ -246,13 +248,13 @@ export default function App() {
                   <button
                     key={item.id}
                     onClick={() => handleNavClick(item.id as ViewState)}
-                    className={`text-sm font-bold transition-colors hover:text-orange-700 relative py-1 ${
-                      currentView === item.id ? 'text-orange-700' : 'text-stone-600'
+                    className={`text-sm font-bold transition-colors hover:text-orange-600 relative py-1 ${
+                      currentView === item.id ? 'text-orange-600' : 'text-stone-500'
                     }`}
                   >
                     {item.label}
                     {currentView === item.id && (
-                      <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-orange-700"></span>
+                      <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-orange-500 rounded-full"></span>
                     )}
                   </button>
                 ))}
@@ -262,7 +264,7 @@ export default function App() {
                 
                 <button 
                   onClick={openCreateModal} 
-                  className="text-sm font-bold text-orange-700 hover:text-orange-800 transition-colors"
+                  className="px-4 py-2 bg-orange-500 text-white text-sm font-bold rounded-full hover:bg-orange-600 transition-all shadow-md hover:shadow-lg shadow-orange-200"
                 >
                   Create Recipe
                 </button>
@@ -275,9 +277,9 @@ export default function App() {
                     placeholder="Find a recipe"
                     value={searchQuery}
                     onChange={(e) => handleGlobalSearch(e.target.value)}
-                    className="w-[240px] transition-all duration-300 border border-stone-300 bg-stone-50 px-4 py-2 pr-10 text-sm rounded-sm focus:border-stone-500 focus:outline-none focus:bg-white"
+                    className="w-[240px] transition-all duration-300 border border-stone-200 bg-stone-50 px-4 py-2 pr-10 text-sm rounded-full focus:border-orange-500 focus:outline-none focus:bg-white focus:ring-2 focus:ring-orange-100"
                  />
-                 <Search className="absolute right-3 top-2.5 text-stone-400 pointer-events-none group-focus-within:text-orange-600" size={16} />
+                 <Search className="absolute right-3 top-2.5 text-stone-400 pointer-events-none group-focus-within:text-orange-500" size={16} />
               </div>
             </div>
 
@@ -295,16 +297,16 @@ export default function App() {
         {currentView === 'collection' && (
           <div className="animate-in fade-in duration-500 space-y-8">
             
-            {/* Collection Sub-Header / Filters */}
-            <div className="flex flex-col gap-6 border-b border-stone-200 pb-8">
+            {/* Collection Sub-Header / Filters - Solid White for contrast against pattern */}
+            <div className="flex flex-col gap-6 bg-white p-8 rounded-3xl shadow-xl shadow-orange-900/10 border-4 border-white/50">
                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <h2 className="text-3xl font-serif font-bold text-stone-800">Latest Recipes</h2>
-                    <p className="text-stone-500 mt-1 italic font-serif">Fresh from the kitchen to your table.</p>
+                    <h2 className="text-4xl font-serif font-bold text-stone-900">Latest Recipes</h2>
+                    <p className="text-stone-500 mt-2 italic font-serif text-lg">Fresh from the kitchen to your table.</p>
                   </div>
                   
                   {/* Time Filter */}
-                  <div className="flex items-center gap-2 self-start md:self-auto bg-white p-1 rounded-full border border-stone-200 shadow-sm">
+                  <div className="flex items-center gap-2 self-start md:self-auto bg-stone-50 p-1.5 rounded-full border border-stone-200">
                     <span className="pl-3 text-xs font-bold uppercase text-stone-400 tracking-wider flex items-center gap-1">
                       <Filter size={12} /> Time
                     </span>
@@ -316,10 +318,10 @@ export default function App() {
                       <button
                         key={option.label}
                         onClick={() => setTimeFilter(option.value)}
-                        className={`rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-wide transition-colors ${
+                        className={`rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wide transition-colors ${
                           timeFilter === option.value
-                            ? 'bg-stone-800 text-white'
-                            : 'text-stone-500 hover:bg-stone-100'
+                            ? 'bg-orange-500 text-white shadow-md shadow-orange-200'
+                            : 'text-stone-500 hover:bg-white hover:text-orange-600'
                         }`}
                       >
                         {option.label}
@@ -329,16 +331,16 @@ export default function App() {
                </div>
 
                {/* Category Tabs */}
-               <div className="overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
-                 <div className="flex gap-2">
+               <div className="overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide pt-2">
+                 <div className="flex gap-4">
                     {CATEGORY_FILTERS.map((cat) => (
                        <button
                          key={cat.label}
                          onClick={() => setCategoryFilter(cat.value)}
-                         className={`whitespace-nowrap px-4 py-2 border-b-2 text-sm font-bold uppercase tracking-widest transition-colors ${
+                         className={`whitespace-nowrap px-2 py-2 border-b-4 text-sm font-bold uppercase tracking-widest transition-all ${
                            categoryFilter === cat.value
-                             ? 'border-orange-700 text-orange-800 bg-orange-50/50'
-                             : 'border-transparent text-stone-500 hover:text-stone-800 hover:border-stone-200'
+                             ? 'border-orange-500 text-orange-600'
+                             : 'border-transparent text-stone-400 hover:text-orange-500 hover:border-orange-200'
                          }`}
                        >
                          {cat.label}
@@ -350,8 +352,8 @@ export default function App() {
 
             {/* Recipes Grid */}
             {isLoading ? (
-              <div className="py-20 text-center">
-                <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-stone-200 border-t-orange-700 mb-4" />
+              <div className="py-20 text-center bg-white rounded-3xl shadow-lg">
+                <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-stone-200 border-t-orange-500 mb-4" />
                 <p className="font-serif text-stone-500 italic">Gathering ingredients...</p>
               </div>
             ) : filteredRecipes.length > 0 ? (
@@ -367,13 +369,13 @@ export default function App() {
                 ))}
               </div>
             ) : (
-              <div className="py-24 text-center border-2 border-dashed border-stone-200 rounded-xl bg-stone-50/50">
+              <div className="py-24 text-center border-2 border-dashed border-stone-200 rounded-3xl bg-white shadow-lg">
                 <ChefHat size={48} className="mx-auto text-stone-300 mb-4" />
                 <h3 className="text-xl font-serif font-bold text-stone-800 mb-2">No recipes found</h3>
                 <p className="text-stone-500 mb-6">Try adjusting your filters or search terms.</p>
                 <button
                   onClick={openCreateModal}
-                  className="inline-flex items-center gap-2 text-orange-700 font-bold text-sm hover:underline"
+                  className="inline-flex items-center gap-2 text-orange-600 font-bold text-sm hover:underline"
                 >
                   <Plus size={16} /> Add New Recipe
                 </button>
@@ -382,10 +384,22 @@ export default function App() {
           </div>
         )}
 
-        {/* OTHER VIEWS */}
-        {currentView === 'pantry' && <PantryView onSelectSuggestion={handlePantrySuggestion} />}
-        {currentView === 'notebook' && <NotebookView />}
-        {currentView === 'library' && <RecipeBooksView />}
+        {/* OTHER VIEWS - Wrapped in solid white containers for readability */}
+        {currentView === 'pantry' && (
+          <div className="bg-white p-8 rounded-3xl shadow-xl border-4 border-white/50">
+            <PantryView onSelectSuggestion={handlePantrySuggestion} />
+          </div>
+        )}
+        {currentView === 'notebook' && (
+          <div className="bg-white p-8 rounded-3xl shadow-xl border-4 border-white/50">
+            <NotebookView />
+          </div>
+        )}
+        {currentView === 'library' && (
+          <div className="bg-white p-8 rounded-3xl shadow-xl border-4 border-white/50">
+            <RecipeBooksView />
+          </div>
+        )}
 
       </main>
 
@@ -393,7 +407,7 @@ export default function App() {
       {currentView === 'collection' && (
         <button
           onClick={openCreateModal}
-          className="lg:hidden fixed bottom-6 right-6 h-14 w-14 flex items-center justify-center rounded-full bg-orange-700 text-white shadow-xl shadow-orange-900/30 z-30 active:scale-95 transition-transform"
+          className="lg:hidden fixed bottom-6 right-6 h-14 w-14 flex items-center justify-center rounded-full bg-orange-500 text-white shadow-xl shadow-orange-500/30 z-30 active:scale-95 transition-transform"
         >
           <Plus size={28} />
         </button>

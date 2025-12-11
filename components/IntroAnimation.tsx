@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { ChefHat } from 'lucide-react';
 
@@ -30,7 +29,7 @@ export const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) =>
 
   return (
     <div 
-      className={`fixed inset-0 z-[100] flex items-center justify-center bg-[#FDFBF7] transition-opacity duration-1000 ease-in-out ${
+      className={`fixed inset-0 z-[100] flex items-center justify-center bg-white transition-opacity duration-1000 ease-in-out ${
         stage === 'exit' ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
@@ -41,8 +40,8 @@ export const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) =>
             stage === 'enter' || stage === 'exit' ? 'scale-100 opacity-100 translate-y-0' : 'scale-50 opacity-0 translate-y-10'
           }`}
         >
-          <div className="p-4 rounded-full bg-orange-50 border border-orange-100 shadow-sm text-orange-800">
-             <ChefHat size={48} strokeWidth={1.5} />
+          <div className="p-4 rounded-full bg-orange-50 border border-orange-100 shadow-sm text-orange-600">
+             <ChefHat size={48} strokeWidth={2} />
           </div>
         </div>
 
@@ -52,12 +51,12 @@ export const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) =>
             stage === 'enter' || stage === 'exit' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
-          <h1 className="font-serif text-5xl font-bold text-stone-800 tracking-tight">
-            Culina<span className="text-orange-700">.</span>
+          <h1 className="font-serif text-5xl font-bold text-stone-900 tracking-tight">
+            Culina<span className="text-orange-500">.</span>
           </h1>
           
           {/* Divider */}
-          <div className={`h-px bg-orange-200 mx-auto transition-all duration-1000 delay-700 ${
+          <div className={`h-1 bg-orange-500 mx-auto transition-all duration-1000 delay-700 rounded-full ${
              stage === 'enter' || stage === 'exit' ? 'w-16 opacity-100' : 'w-0 opacity-0'
           }`} />
 

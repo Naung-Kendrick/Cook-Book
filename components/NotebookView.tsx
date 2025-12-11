@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { NotebookEntry } from '../types';
 import * as storageService from '../services/storageService';
@@ -52,7 +51,7 @@ export const NotebookView: React.FC = () => {
       {/* Notebook Header */}
       <div className="text-center space-y-4 mb-12">
         <h2 className="text-5xl font-handwriting font-bold text-stone-800">Kitchen Notes</h2>
-        <div className="flex justify-center text-stone-400">
+        <div className="flex justify-center text-orange-400">
            <PenTool size={20} />
         </div>
         <p className="text-stone-500 font-serif italic">"Recipes borrowed, learned, and stolen with love."</p>
@@ -64,16 +63,16 @@ export const NotebookView: React.FC = () => {
           <div className="text-center">
              <button 
               onClick={() => setIsAdding(true)}
-              className="inline-flex items-center gap-3 bg-stone-900 text-white px-8 py-4 rounded-none font-bold uppercase tracking-widest text-sm hover:bg-orange-700 transition-colors shadow-lg"
+              className="inline-flex items-center gap-3 bg-orange-500 text-white px-8 py-4 rounded-xl font-bold uppercase tracking-widest text-sm hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/20"
             >
               <Plus size={16} />
               <span>Write a new entry</span>
             </button>
           </div>
         ) : (
-          <div className="bg-[#fcfbf9] p-8 md:p-12 shadow-2xl border border-stone-200 relative transform transition-all mx-auto max-w-2xl">
+          <div className="bg-[#fcfbf9] p-8 md:p-12 shadow-2xl border border-stone-100 relative transform transition-all mx-auto max-w-2xl rounded-xl">
              {/* Tape effect */}
-             <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-8 bg-yellow-100/50 backdrop-blur-sm rotate-[-2deg] shadow-sm border border-white/20"></div>
+             <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-8 bg-yellow-100/80 backdrop-blur-sm rotate-[-2deg] shadow-sm border border-white/20"></div>
 
              <h3 className="font-handwriting text-3xl text-stone-800 mb-8 text-center">Dear Diary...</h3>
              
@@ -87,7 +86,7 @@ export const NotebookView: React.FC = () => {
                       value={newTitle}
                       onChange={e => setNewTitle(e.target.value)}
                       placeholder="Grandma's Secret Sauce"
-                      className="w-full bg-stone-50 border border-stone-200 p-3 font-serif text-lg focus:border-orange-500 focus:outline-none transition-colors"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-lg p-3 font-serif text-lg focus:border-orange-500 focus:outline-none transition-colors"
                    />
                  </div>
                  <div>
@@ -97,12 +96,12 @@ export const NotebookView: React.FC = () => {
                       value={newSource}
                       onChange={e => setNewSource(e.target.value)}
                       placeholder="Learned from Auntie May..."
-                      className="w-full bg-stone-50 border border-stone-200 p-3 font-serif text-lg focus:border-orange-500 focus:outline-none transition-colors"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-lg p-3 font-serif text-lg focus:border-orange-500 focus:outline-none transition-colors"
                    />
                  </div>
                </div>
                
-               <div className="bg-white p-6 border border-stone-200 shadow-inner">
+               <div className="bg-white p-6 border border-stone-200 rounded-lg shadow-inner">
                  <textarea 
                     required
                     value={newContent}
@@ -128,7 +127,7 @@ export const NotebookView: React.FC = () => {
                  </button>
                  <button 
                    type="submit"
-                   className="flex items-center gap-2 bg-stone-900 text-white px-6 py-3 font-bold uppercase tracking-widest text-xs hover:bg-orange-700 transition-colors"
+                   className="flex items-center gap-2 bg-orange-500 text-white px-6 py-3 rounded-lg font-bold uppercase tracking-widest text-xs hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/20"
                  >
                    <Save size={16} /> Save Entry
                  </button>
@@ -141,26 +140,26 @@ export const NotebookView: React.FC = () => {
       {/* Notes Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
         {entries.map((entry, index) => (
-          <div key={entry.id} className={`group relative bg-white p-8 shadow-sm hover:shadow-xl transition-all duration-500 border border-stone-100 ${index % 2 === 0 ? 'rotate-1' : '-rotate-1'} hover:rotate-0 hover:z-10`}>
+          <div key={entry.id} className={`group relative bg-white p-8 shadow-sm hover:shadow-xl transition-all duration-500 border border-stone-100 rounded-xl ${index % 2 === 0 ? 'rotate-1' : '-rotate-1'} hover:rotate-0 hover:z-10 hover:border-orange-100`}>
              
              <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-               <button onClick={() => handleDelete(entry.id)} className="text-stone-300 hover:text-red-600 p-2 transition-colors">
+               <button onClick={() => handleDelete(entry.id)} className="text-stone-300 hover:text-red-500 p-2 transition-colors">
                  <Trash2 size={16} />
                </button>
              </div>
 
              <div className="mb-6">
                <div className="flex items-baseline gap-3 mb-2">
-                 <span className="text-xs font-bold uppercase tracking-widest text-stone-300">{new Date(entry.createdAt).toLocaleDateString()}</span>
+                 <span className="text-xs font-bold uppercase tracking-widest text-orange-400">{new Date(entry.createdAt).toLocaleDateString()}</span>
                  <div className="h-px bg-stone-100 flex-1"></div>
                </div>
-               <h3 className="font-handwriting text-4xl font-bold text-stone-800">{entry.title}</h3>
+               <h3 className="font-handwriting text-4xl font-bold text-stone-800 group-hover:text-orange-600 transition-colors">{entry.title}</h3>
                {entry.source && (
-                 <p className="text-xs font-serif italic text-orange-800 mt-2">Recorded from: {entry.source}</p>
+                 <p className="text-xs font-serif italic text-stone-500 mt-2">Recorded from: {entry.source}</p>
                )}
              </div>
              
-             <div className="font-serif text-stone-600 leading-relaxed whitespace-pre-wrap text-sm border-l-2 border-stone-100 pl-4">
+             <div className="font-serif text-stone-600 leading-relaxed whitespace-pre-wrap text-sm border-l-2 border-orange-100 pl-4">
                {entry.content}
              </div>
           </div>

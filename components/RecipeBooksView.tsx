@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Download, Book } from 'lucide-react';
 
@@ -9,7 +8,7 @@ const BOOKS = [
     author: "Daw Nu",
     description: "A collection of 50 timeless recipes from the heart of Myanmar.",
     image: "https://images.unsplash.com/photo-1598514983318-2f64f8f4796c?q=80&w=600&auto=format&fit=crop",
-    color: "bg-emerald-800"
+    color: "bg-orange-600"
   },
   {
     id: 2,
@@ -17,7 +16,7 @@ const BOOKS = [
     author: "Culina Kitchen",
     description: "Warm your soul with these rustic broths and hearty stews.",
     image: "https://images.unsplash.com/photo-1547592180-85f173990554?q=80&w=600&auto=format&fit=crop",
-    color: "bg-amber-800"
+    color: "bg-orange-500"
   },
   {
     id: 3,
@@ -25,7 +24,7 @@ const BOOKS = [
     author: "Chef Marco",
     description: "Master the flame with techniques for meats and vegetables.",
     image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=600&auto=format&fit=crop",
-    color: "bg-orange-900"
+    color: "bg-stone-900"
   },
   {
     id: 4,
@@ -33,7 +32,7 @@ const BOOKS = [
     author: "Mountain Heritage",
     description: "Explore the culinary traditions of the tea-growing regions.",
     image: "https://images.unsplash.com/photo-1594488516993-9c5950d877f0?q=80&w=600&auto=format&fit=crop",
-    color: "bg-lime-900"
+    color: "bg-yellow-600"
   }
 ];
 
@@ -46,7 +45,7 @@ export const RecipeBooksView: React.FC = () => {
     <div className="space-y-12 animate-in fade-in duration-500">
       <div className="text-center space-y-3">
         <h2 className="text-4xl font-serif font-bold text-stone-800">The Library</h2>
-        <div className="h-1 w-20 bg-orange-700 mx-auto"></div>
+        <div className="h-1 w-20 bg-orange-500 mx-auto rounded-full"></div>
         <p className="text-stone-500 max-w-lg mx-auto font-serif italic">
           Expand your culinary knowledge with our curated collection.
         </p>
@@ -54,7 +53,7 @@ export const RecipeBooksView: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {BOOKS.map((book) => (
-          <div key={book.id} className="group relative flex flex-col bg-white rounded-r-xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden border-l-[6px] border-stone-800/20">
+          <div key={book.id} className="group relative flex flex-col bg-white rounded-r-xl rounded-l-md shadow-md hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 hover:-translate-y-1 overflow-hidden border-l-[6px] border-stone-800/20">
             {/* Book Spine visual trick */}
             <div className={`absolute left-0 top-0 bottom-0 w-1 ${book.color}`}></div>
             
@@ -81,7 +80,7 @@ export const RecipeBooksView: React.FC = () => {
               <div className="mt-auto pt-4 border-t border-stone-100">
                 <button 
                   onClick={() => handleDownload(book.title)}
-                  className="w-full flex items-center justify-center gap-2 bg-stone-50 hover:bg-orange-700 hover:text-white text-stone-600 font-bold uppercase tracking-widest text-xs py-3 rounded transition-colors group/btn"
+                  className="w-full flex items-center justify-center gap-2 bg-stone-50 hover:bg-orange-500 hover:text-white text-stone-600 font-bold uppercase tracking-widest text-xs py-3 rounded transition-colors group/btn"
                 >
                   <Download size={14} />
                   <span>Download PDF</span>
