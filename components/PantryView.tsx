@@ -29,7 +29,7 @@ export const PantryView: React.FC<PantryViewProps> = ({ onSelectSuggestion }) =>
       const msg = err.message || '';
       // Friendly message for Vercel/Env var issues
       if (msg.includes('API Key')) {
-          setError('Missing API Key. Please add API_KEY to your Vercel Environment Variables.');
+          setError("Vercel Setup: Please rename your Env Variable to 'VITE_API_KEY' (or 'REACT_APP_API_KEY') and Redeploy.");
       } else {
           setError('Chef is having trouble connecting. Please check your internet or API key.');
       }

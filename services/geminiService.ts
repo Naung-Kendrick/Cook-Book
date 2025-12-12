@@ -7,17 +7,35 @@ const MODEL_ID = 'gemini-2.5-flash';
 const getAI = () => {
   let apiKey: string | undefined;
 
+  // 1. Try process.env.API_KEY (Standard & Local)
   try {
-    // Attempt to read process.env.API_KEY directly.
-    // Build tools (like Vite/Webpack) replace 'process.env.API_KEY' with the actual string value at build time.
-    // We use a try-catch to prevent a crash if 'process' is not defined in the browser and no replacement occurred.
-    apiKey = process.env.API_KEY;
-  } catch (e) {
-    console.warn("Could not read process.env.API_KEY, checking if value was substituted...");
+    if (process.env.API_KEY) apiKey = process.env.API_KEY;
+  } catch (e) {}
+
+  // 2. Try VITE_API_KEY (Vite / Vercel default for some setups)
+  if (!apiKey) {
+    try {
+      // @ts-ignore
+      if (import.meta.env?.VITE_API_KEY) apiKey = import.meta.env.VITE_API_KEY;
+    } catch (e) {}
+  }
+
+  // 3. Try REACT_APP_API_KEY (Create React App)
+  if (!apiKey) {
+    try {
+      if (process.env.REACT_APP_API_KEY) apiKey = process.env.REACT_APP_API_KEY;
+    } catch (e) {}
+  }
+
+  // 4. Try NEXT_PUBLIC_API_KEY (Next.js)
+  if (!apiKey) {
+    try {
+      if (process.env.NEXT_PUBLIC_API_KEY) apiKey = process.env.NEXT_PUBLIC_API_KEY;
+    } catch (e) {}
   }
   
   if (!apiKey) {
-    throw new Error("API Key is missing. On Vercel, go to Settings > Environment Variables and add 'API_KEY'. Locally, check your .env file.");
+    throw new Error("API Key is missing. On Vercel, please rename your environment variable to 'VITE_API_KEY' (or 'REACT_APP_API_KEY') in Settings and REDEPLOY.");
   }
   
   // Initialize Gemini with the API key

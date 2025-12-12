@@ -85,8 +85,8 @@ export const RecipeModal: React.FC<RecipeModalProps> = ({ isOpen, onClose, onSav
       console.error("Failed to generate", err);
       // Nice error message handling
       const errorMessage = err.message || "Unable to generate recipe.";
-      if (errorMessage.includes("API Key is missing")) {
-        setError("Setup Required: Add 'API_KEY' to your .env file (local) or Vercel Environment Variables (cloud).");
+      if (errorMessage.includes("API Key")) {
+        setError("Vercel Setup: Please rename your Env Variable to 'VITE_API_KEY' (or 'REACT_APP_API_KEY') and Redeploy.");
       } else {
         setError("Chef is busy! " + errorMessage);
       }
