@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Recipe, RecipeFormData, RecipeCategory } from '../types';
-import { X, Sparkles, Loader2, Save, Scroll, AlertCircle, AlertTriangle } from 'lucide-react';
+import { X, Sparkles, Loader2, Save, Scroll, AlertTriangle } from 'lucide-react';
 import { generateRecipeWithAI } from '../services/geminiService';
 
 interface RecipeModalProps {
@@ -86,7 +86,7 @@ export const RecipeModal: React.FC<RecipeModalProps> = ({ isOpen, onClose, onSav
       // Nice error message handling
       const errorMessage = err.message || "Unable to generate recipe.";
       if (errorMessage.includes("API Key is missing")) {
-        setError("Missing API Key. Please add your Google Gemini API Key to your environment variables (.env file).");
+        setError("Setup Required: Add 'API_KEY' to your .env file (local) or Vercel Environment Variables (cloud).");
       } else {
         setError("Chef is busy! " + errorMessage);
       }

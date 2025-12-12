@@ -5,15 +5,23 @@ const MODEL_ID = 'gemini-2.5-flash';
 
 // Helper to safely initialize the AI client
 const getAI = () => {
-  // specific check to prevent crash in environments where process is undefined
-  const apiKey = typeof process !== 'undefined' ? process.env.API_KEY : undefined;
-  
-  if (!apiKey) {
-    throw new Error("API Key is missing. Please check your .env file or deployment settings.");
+  let apiKey: string | undefined;
+
+  try {
+    // Attempt to read process.env.API_KEY directly.
+    // Build tools (like Vite/Webpack) replace 'process.env.API_KEY' with the actual string value at build time.
+    // We use a try-catch to prevent a crash if 'process' is not defined in the browser and no replacement occurred.
+    apiKey = process.env.API_KEY;
+  } catch (e) {
+    console.warn("Could not read process.env.API_KEY, checking if value was substituted...");
   }
   
-  // Initialize Gemini with the environment variable
-  return new GoogleGenAI({ apiKey: process.env.API_KEY });
+  if (!apiKey) {
+    throw new Error("API Key is missing. On Vercel, go to Settings > Environment Variables and add 'API_KEY'. Locally, check your .env file.");
+  }
+  
+  // Initialize Gemini with the API key
+  return new GoogleGenAI({ apiKey });
 };
 
 export const generateRecipeWithAI = async (prompt: string): Promise<RecipeFormData> => {

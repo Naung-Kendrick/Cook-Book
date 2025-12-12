@@ -24,9 +24,15 @@ export const PantryView: React.FC<PantryViewProps> = ({ onSelectSuggestion }) =>
     try {
       const results = await suggestRecipesFromIngredients(ingredients);
       setSuggestions(results);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setError('Failed to get suggestions. Please check your API key and try again.');
+      const msg = err.message || '';
+      // Friendly message for Vercel/Env var issues
+      if (msg.includes('API Key')) {
+          setError('Missing API Key. Please add API_KEY to your Vercel Environment Variables.');
+      } else {
+          setError('Chef is having trouble connecting. Please check your internet or API key.');
+      }
     } finally {
       setIsSearching(false);
     }
