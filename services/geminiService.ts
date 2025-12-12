@@ -1,18 +1,24 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { RecipeFormData, RecipeSuggestion } from "../types";
 
-// Initialize Gemini
-// Note: In a real environment, allow the user to input their key or use a proxy.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
-
 const MODEL_ID = 'gemini-2.5-flash';
 
-export const generateRecipeWithAI = async (prompt: string): Promise<RecipeFormData> => {
-  if (!process.env.API_KEY) {
-    throw new Error("API Key is missing. Please set process.env.API_KEY.");
+// Helper to safely initialize the AI client
+const getAI = () => {
+  // specific check to prevent crash in environments where process is undefined
+  const apiKey = typeof process !== 'undefined' ? process.env.API_KEY : undefined;
+  
+  if (!apiKey) {
+    throw new Error("API Key is missing. Please check your .env file or deployment settings.");
   }
+  
+  // Initialize Gemini with the environment variable
+  return new GoogleGenAI({ apiKey: process.env.API_KEY });
+};
 
+export const generateRecipeWithAI = async (prompt: string): Promise<RecipeFormData> => {
+  const ai = getAI();
+  
   const response = await ai.models.generateContent({
     model: MODEL_ID,
     contents: `Generate a cooking recipe for: ${prompt}. 
@@ -54,10 +60,8 @@ export const generateRecipeWithAI = async (prompt: string): Promise<RecipeFormDa
 };
 
 export const suggestRecipesFromIngredients = async (ingredients: string): Promise<RecipeSuggestion[]> => {
-  if (!process.env.API_KEY) {
-    throw new Error("API Key is missing.");
-  }
-
+  const ai = getAI();
+  
   const response = await ai.models.generateContent({
     model: MODEL_ID,
     contents: `I have these ingredients: ${ingredients}. Suggest 3 distinct recipes I can make. 

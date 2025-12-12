@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Recipe, RecipeFormData, RecipeCategory } from '../types';
-import { X, Sparkles, Loader2, Save, Scroll } from 'lucide-react';
+import { X, Sparkles, Loader2, Save, Scroll, AlertCircle, AlertTriangle } from 'lucide-react';
 import { generateRecipeWithAI } from '../services/geminiService';
 
 interface RecipeModalProps {
@@ -34,9 +34,11 @@ export const RecipeModal: React.FC<RecipeModalProps> = ({ isOpen, onClose, onSav
   const [aiPrompt, setAiPrompt] = useState('');
   const [activeTab, setActiveTab] = useState<'manual' | 'ai'>('manual');
   const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (isOpen) {
+      setError('');
       if (initialData) {
         setFormData({
           name: initialData.name,
@@ -71,6 +73,7 @@ export const RecipeModal: React.FC<RecipeModalProps> = ({ isOpen, onClose, onSav
   const handleGenerate = async () => {
     if (!aiPrompt.trim()) return;
     setIsGenerating(true);
+    setError('');
     try {
       const generated = await generateRecipeWithAI(aiPrompt);
       setFormData({
@@ -78,9 +81,15 @@ export const RecipeModal: React.FC<RecipeModalProps> = ({ isOpen, onClose, onSav
         imageUrl: formData.imageUrl
       });
       setActiveTab('manual');
-    } catch (error) {
-      console.error("Failed to generate", error);
-      alert("Failed to generate recipe. Please check your API key.");
+    } catch (err: any) {
+      console.error("Failed to generate", err);
+      // Nice error message handling
+      const errorMessage = err.message || "Unable to generate recipe.";
+      if (errorMessage.includes("API Key is missing")) {
+        setError("Missing API Key. Please add your Google Gemini API Key to your environment variables (.env file).");
+      } else {
+        setError("Chef is busy! " + errorMessage);
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -165,107 +174,111 @@ export const RecipeModal: React.FC<RecipeModalProps> = ({ isOpen, onClose, onSav
                   {isGenerating ? <Loader2 className="animate-spin" size={20} /> : <Sparkles size={20} />}
                   {isGenerating ? 'Cooking up magic...' : 'Generate Recipe'}
                 </button>
+                {error && (
+                  <div className="flex items-start gap-3 text-red-600 text-sm bg-red-50 p-4 rounded-xl text-left border border-red-100">
+                    <AlertTriangle size={20} className="shrink-0 mt-0.5" />
+                    <span>{error}</span>
+                  </div>
+                )}
               </div>
             </div>
           ) : (
             <form id="recipeForm" onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-stone-500">Recipe Name</label>
+                <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-stone-400">
+                  Dish Name
+                </label>
                 <input
-                  required
                   type="text"
+                  required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full rounded-lg border-2 border-stone-200 bg-white px-4 py-3 text-stone-800 focus:border-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all font-serif text-lg"
-                  placeholder="Grandma's Secret Sauce"
+                  className="w-full rounded-lg border border-stone-200 bg-stone-50 p-3 font-serif text-lg text-stone-800 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
+                  placeholder="e.g., Grandma's Apple Pie"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                   <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-stone-500">Category</label>
-                   <select
-                     value={formData.category}
-                     onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
-                     className="w-full rounded-lg border-2 border-stone-200 bg-white px-4 py-3 text-stone-800 focus:border-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all appearance-none cursor-pointer"
-                   >
-                     {CATEGORIES.map(cat => (
-                       <option key={cat} value={cat}>{cat}</option>
-                     ))}
-                   </select>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-stone-400">
+                    Category
+                  </label>
+                  <select
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value as RecipeCategory })}
+                    className="w-full rounded-lg border border-stone-200 bg-stone-50 p-3 text-stone-800 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
+                  >
+                    {CATEGORIES.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div>
-                  <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-stone-500">Time (mins)</label>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-stone-400">
+                    Time (mins)
+                  </label>
                   <input
-                    required
                     type="number"
                     min="1"
+                    required
                     value={formData.cookingTime}
                     onChange={(e) => setFormData({ ...formData, cookingTime: parseInt(e.target.value) || 0 })}
-                    className="w-full rounded-lg border-2 border-stone-200 bg-white px-4 py-3 text-stone-800 focus:border-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all"
+                    className="w-full rounded-lg border border-stone-200 bg-stone-50 p-3 text-stone-800 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
                   />
                 </div>
               </div>
-              
-              <div>
-                <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-stone-500">Image URL</label>
-                <input
-                  type="url"
-                  value={formData.imageUrl}
-                  onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                  className="w-full rounded-lg border-2 border-stone-200 bg-white px-4 py-3 text-stone-800 focus:border-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all text-sm"
-                  placeholder="https://..."
-                />
-              </div>
 
               <div>
-                <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-stone-500">Ingredients</label>
+                <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-stone-400">
+                  Ingredients <span className="text-[10px] lowercase text-stone-400 font-normal">(one per line)</span>
+                </label>
                 <textarea
                   required
-                  rows={5}
                   value={formData.ingredients}
                   onChange={(e) => setFormData({ ...formData, ingredients: e.target.value })}
-                  className="w-full rounded-lg border-2 border-stone-200 bg-white px-4 py-3 text-stone-800 focus:border-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all font-mono text-sm leading-relaxed"
-                  placeholder="2 cups flour&#10;1 tsp cinnamon"
+                  rows={5}
+                  className="w-full rounded-lg border border-stone-200 bg-stone-50 p-3 text-stone-800 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 whitespace-pre-wrap"
+                  placeholder="- 2 cups flour&#10;- 1 tsp salt"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-stone-500">Instructions</label>
+                <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-stone-400">
+                  Instructions
+                </label>
                 <textarea
                   required
-                  rows={5}
                   value={formData.steps}
                   onChange={(e) => setFormData({ ...formData, steps: e.target.value })}
-                  className="w-full rounded-lg border-2 border-stone-200 bg-white px-4 py-3 text-stone-800 focus:border-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all text-sm leading-relaxed"
-                  placeholder="1. Preheat the oven...&#10;2. Mix the dry ingredients..."
+                  rows={5}
+                  className="w-full rounded-lg border border-stone-200 bg-stone-50 p-3 text-stone-800 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
+                  placeholder="1. Preheat oven...&#10;2. Mix ingredients..."
                 />
+              </div>
+
+              <div className="flex items-center justify-end gap-4 pt-4 border-t border-stone-100">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  disabled={isSaving}
+                  className="rounded-lg px-6 py-3 text-sm font-bold uppercase tracking-wide text-stone-400 hover:bg-stone-50 hover:text-stone-600 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="flex items-center gap-2 rounded-lg bg-orange-500 px-8 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-lg shadow-orange-500/20 hover:bg-orange-600 transition-all hover:-translate-y-0.5"
+                >
+                   {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+                   {isSaving ? 'Saving...' : 'Save Recipe'}
+                </button>
               </div>
             </form>
           )}
         </div>
-
-        {/* Footer */}
-        {activeTab === 'manual' && (
-          <div className="flex items-center justify-end gap-3 border-t border-stone-100 bg-stone-50 px-8 py-5">
-            <button
-              onClick={onClose}
-              type="button"
-              className="rounded-lg px-5 py-2.5 text-sm font-bold text-stone-500 hover:text-stone-900 hover:bg-white transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              form="recipeForm"
-              disabled={isSaving}
-              className="flex items-center gap-2 rounded-lg bg-orange-500 px-8 py-2.5 text-sm font-bold text-white shadow-lg shadow-orange-500/20 hover:bg-orange-600 hover:-translate-y-0.5 transition-all disabled:opacity-70"
-            >
-              {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-              {initialData ? 'Update Recipe' : 'Save to Cookbook'}
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );
